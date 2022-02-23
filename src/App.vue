@@ -1,26 +1,51 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+<div class="container">
+	<ticker-main></ticker-main>
+</div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import TickerMain from './components/ticker-main.vue'
 
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
+	name: 'app',
+	components: {
+		TickerMain
+	}
 }
 </script>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+
+</style>
+
+<style lang="scss">
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: 'anonymous pro';
+	color: #ffffff;
+}
+
+body {
+	background-color: #2b3043;
+}
+
+input,
+button {
+	padding: 10px;
+	border-radius: 5px;
+	background-color: inherit;
+}
+
+button {
+	border: none;
+	cursor: pointer;
+}
+
+.container {
+	max-width: 960px;
+	margin: 0 auto;
 }
 </style>
