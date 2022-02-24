@@ -9,6 +9,18 @@
 	@updateDropDownValue="updateDropDownValue"
 	class="ticker-form"
 	></ticker-form>
+	<div class="buttons">
+		<button
+		v-if="currentPage > 1"
+		@click="decrementCurrentPage"
+		class="prevPage"
+		>prev</button>
+		<button
+		v-if="currentPage < pages"
+		@click="incrementCurrentPage"
+		class="nextPage"
+		>next</button>
+	</div>
 	<ticker-list
 	v-if="tickerList.length > 0"
 	:tickerList="sortedTickerList"
@@ -38,7 +50,9 @@ export default {
 			currentTickerItem: null,
 			labelIsShow: false,
 			dropDownValue: null,
-			search: ''
+			search: '',
+			currentPage: 1,
+			pages: null
 		}
 	},
 	methods: {
@@ -68,6 +82,7 @@ export default {
 			const id = Date.now()
 			title = title.toUpperCase()
 			this.tickerList.push({...r, title, id})
+			this.pages = Math.ceil(this.tickerList.length / 4)
 			localStorage.setItem('tickerList', JSON.stringify(this.tickerList))
 			this.subscirbeToUpdate(title, id)
 		},
@@ -76,6 +91,7 @@ export default {
 				this.currentTickerItem = null
 			}
 			this.tickerList = this.tickerList.filter(tickerItem => tickerItem.id !== id)
+			this.pages = Math.ceil(this.tickerList.length / 4)
 			localStorage.setItem('tickerList', JSON.stringify(this.tickerList))
 		},
 		updateCurrentTickerItem(id) {
@@ -86,6 +102,12 @@ export default {
 		},
 		updateDropDownValue(value) {
 			this.dropDownValue = value
+		},
+		incrementCurrentPage() {
+			this.currentPage = this.currentPage + 1
+		},
+		decrementCurrentPage() {
+			this.currentPage = this.currentPage - 1
 		}
 	},
 	async mounted() {
@@ -93,6 +115,7 @@ export default {
 		const tickerData = localStorage.getItem('tickerList')
 		if (tickerData) {
 			this.tickerList = JSON.parse(tickerData)
+			this.pages = Math.ceil(this.tickerList.length / 4)
 			this.tickerList.map(tickerItem => {
 				this.subscirbeToUpdate(tickerItem.title, tickerItem.id)
 			})
@@ -100,7 +123,11 @@ export default {
 	},
 	computed: {
 		sortedTickerList() {
-			return this.tickerList.filter(tickerItem => tickerItem.title.toLowerCase().includes(this.search.toLowerCase()))
+			const start = 4 * (this.currentPage - 1)
+			const end = 4 * this.currentPage
+			const tickerList = this.tickerList.filter(tickerItem => tickerItem.title.toLowerCase().includes(this.search.toLowerCase()))
+			this.pages = Math.max(tickerList.length / 4)
+			return tickerList.slice(start, end)
 		}
 	},
 	watch: {
@@ -135,6 +162,10 @@ export default {
 					return
 				}
 			}
+		},
+		search() {
+			this.currentPage = 1
+			this.pages
 		}
 	}
 }
@@ -146,6 +177,18 @@ export default {
 }
 
 .ticker-form {
+	margin-bottom: 5px;
+}
+
+.nextPage,
+.prevPage {
+	background-color: #00f5ac;
+}
+
+.buttons {
+	display: flex;
+	column-gap: 10px;
+	justify-content: flex-end;
 	margin-bottom: 10px;
 }
 </style>
